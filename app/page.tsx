@@ -1,10 +1,10 @@
 
 "use client";
 import Link from "next/link";
-import { useAuth } from "@/util/AuthContext"; // 🚨 Use the custom hook
+import { useAuth } from "../util/AuthContext"; // 🚨 Use the custom hook
 import { signOut } from "firebase/auth";
-import { auth } from "@/util/firebaseConfig";
-import AuthForm from "@/components/AuthForm";
+import { auth } from "../util/firebaseConfig";
+import AuthForm from "../components/AuthForm";
 
 export default function Home() {
   // 🚨 SIMPLIFIED: Get state from context
