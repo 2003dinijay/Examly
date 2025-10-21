@@ -1,17 +1,13 @@
-
 "use client";
 import Link from "next/link";
-import { useAuth } from "../util/AuthContext"; // 🚨 Use the custom hook
+import { useAuth } from "../util/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
 import AuthForm from "../components/AuthForm";
 
 export default function Home() {
-  // 🚨 SIMPLIFIED: Get state from context
   const { user, loading } = useAuth();
   
-  // The rest of the component logic relies on 'user' and 'loading'
-
   const userName = user?.email; 
 
   const handleLogout = async () => {
@@ -28,51 +24,141 @@ export default function Home() {
   
   const handleLoginSuccess = () => { /* ... */ };
 
-  // ------------------------------------
-  // Render Loading/Login Form
-  // ------------------------------------
+  // Loading State
   if (loading) {
-    return <div className="p-8 text-xl">Loading authentication...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="flex items-center gap-3">
+          <svg className="animate-spin h-8 w-8 text-blue-500" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          <span className="text-xl font-semibold text-slate-700">Loading authentication...</span>
+        </div>
+      </div>
+    );
   }
 
+  // Login Form
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-50">
-        {/* ... Login Form ... */}
+      <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gradient-to-br from-slate-50 to-blue-50">
         <AuthForm onLoginSuccess={handleLoginSuccess} />
       </div>
     );
   }
 
-  // ------------------------------------
-  // Render Main Navigation
-  // ------------------------------------
+  // Main Navigation
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gray-50">
-      <h1 className="text-3xl font-bold mb-2">Quiz App</h1>
-      
-      <div className="flex items-center text-lg text-gray-600 mb-8">
-        <p>Logged in as: <span className="font-semibold text-blue-600">{userName}</span></p>
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header Section */}
+      <div className="w-full max-w-2xl mb-8">
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Quiz App</h1>
+            <p className="text-sm text-slate-500">Your interactive learning platform</p>
+          </div>
+        </div>
         
-        <button
-          onClick={handleLogout}
-          className="ml-4 text-sm text-red-500 hover:text-red-700 underline transition-colors"
-        >
-          (Log Out)
-        </button>
+        {/* User Info Card */}
+        <div className="p-4 rounded-2xl bg-white border-2 border-slate-200 shadow-lg flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white shadow-md">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-slate-500 font-medium">Logged in as</p>
+              <p className="font-semibold text-slate-800">{userName}</p>
+            </div>
+          </div>
+          
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-600 hover:text-white hover:bg-red-500 border-2 border-red-300 hover:border-red-500 rounded-xl transition-all duration-300"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Log Out
+          </button>
+        </div>
       </div>
-      <div className="flex flex-col gap-4 w-full max-w-xs">
-        <Link href={"/study"} className="text-center bg-gray-800 text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition">
-          Generate Notes
+
+      {/* Navigation Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+        {/* Generate Notes */}
+        <Link href="/study" className="group">
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-gray-100 border-2 border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Generate Notes</h3>
+                <p className="text-xs text-gray-600">AI-powered study materials</p>
+              </div>
+            </div>
+          </div>
         </Link>
-        <Link href={"/submit"} className="text-center bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-          Submit Answer
+
+        {/* Submit Answer */}
+        <Link href="/submit" className="group">
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-blue-900">Submit Answer</h3>
+                <p className="text-xs text-blue-600">Complete your quiz</p>
+              </div>
+            </div>
+          </div>
         </Link>
-        <Link href={"/leaderboard"} className="text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
-          Leaderboard
+
+        {/* Leaderboard */}
+        <Link href="/leaderboard" className="group">
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-100 border-2 border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-purple-900">Leaderboard</h3>
+                <p className="text-xs text-purple-600">See top performers</p>
+              </div>
+            </div>
+          </div>
         </Link>
-        <Link href={"/admin"} className="text-center bg-gray-800 text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition">
-          Admin (Requires Admin Login)
+
+        {/* Admin */}
+        <Link href="/admin" className="group">
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-gray-100 border-2 border-slate-300 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Admin Panel</h3>
+                <p className="text-xs text-gray-600">Requires admin login</p>
+              </div>
+            </div>
+          </div>
         </Link>
       </div>
     </div>
