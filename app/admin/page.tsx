@@ -15,7 +15,7 @@ import AdminControl from "../../components/AdminControl";
 // 🚨 Import the User Management Component
 import UserManagement from "../../components/UserManagement"; 
 
-const ADMIN_EMAIL = "admin@examly.com"; 
+const ADMIN_EMAIL = "admin@edly.com"; 
 
 // =======================================================
 // User Registration Form (Stays the same)
